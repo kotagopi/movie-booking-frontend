@@ -1,27 +1,28 @@
 import React, { useState } from "react";
-import api from "../api/api";
+import api from "../api/api"; // your axios instance
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const RegisterPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", { email, password });
-      localStorage.setItem("token", res.data.token);
-      toast.success("Login Successful! Redirecting to dashboard...");
-      navigate("/dashboard");
+      const res = await api.post("/auth/register", { name, email, password });
+      toast.success(
+        res.data.message || "Registration Successful! Please login."
+      );
+      setName("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
       const serverErrorMessage = error.response?.data?.message;
       const errorMessage =
-        serverErrorMessage || "Login failed. Check server connection.";
-
+        serverErrorMessage || "Registration failed. Check server connection.";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -32,9 +33,22 @@ const LoginPage = () => {
     <div className="flex h-screen items-center justify-center bg-gray-100 font-[Inter]">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          Welcome Back 👋
+          Create Account 👋
         </h2>
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">
               Email
@@ -70,13 +84,13 @@ const LoginPage = () => {
                 : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="text-sm text-center text-gray-500 mt-6">
-          Don’t have an account?{" "}
-          <a href="/register" className="text-blue-600 hover:underline">
-            Sign up
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-600 hover:underline">
+            Login
           </a>
         </p>
       </div>
@@ -84,4 +98,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
