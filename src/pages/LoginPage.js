@@ -14,7 +14,11 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const res = await api.post("/auth/login", { email, password });
-      localStorage.setItem("token", res.data.token);
+      const authData = {
+        token: res.data.token,
+        user: res.data.user
+      }
+      localStorage.setItem("auth", JSON.stringify(authData));
       toast.success("Login Successful! Redirecting to dashboard...");
       navigate("/dashboard");
     } catch (error) {

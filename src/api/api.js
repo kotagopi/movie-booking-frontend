@@ -7,9 +7,11 @@ const api = axios.create({
 // add a request interceptor for gloabl authorization
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  const authString = localStorage.getItem("auth");
+  const auth = JSON.parse(authString);
+  console.log(auth, 'authentication')
+  if (auth && auth.token) {
+    config.headers.Authorization = `Bearer ${auth.token}`;
   }
   return config;
 },
