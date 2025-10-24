@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import { MovieCard } from "../components/MovieCard";
+import { userContext } from "../context/UserContext";
 
 const DashBoard = () => {
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
+  const { logoutUser } = useContext(userContext)
 
   const handleLogout = () => {
-    localStorage.removeItem("auth");
+    logoutUser(null);
     navigate("/");
   };
 

@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { userContext } from "../context/UserContext";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("gopi@gmail.com");
+  const [password, setPassword] = useState("gopi@123");
   const [loading, setLoading] = useState(false);
+  const { loginUser } = useContext(userContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
+    debugger;
     e.preventDefault();
     setLoading(true);
     try {
@@ -18,7 +21,7 @@ const LoginPage = () => {
         token: res.data.token,
         user: res.data.user
       }
-      localStorage.setItem("auth", JSON.stringify(authData));
+      await loginUser(authData);
       toast.success("Login Successful! Redirecting to dashboard...");
       navigate("/dashboard");
     } catch (error) {

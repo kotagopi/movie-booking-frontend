@@ -4,14 +4,18 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL + '/api'
 });
 
+let token = null;
+
+export const setAuthToken = (newToken) => {
+  token = newToken;
+}
+
+
 // add a request interceptor for gloabl authorization
 
 api.interceptors.request.use((config) => {
-  const authString = localStorage.getItem("auth");
-  const auth = JSON.parse(authString);
-  console.log(auth, 'authentication')
-  if (auth && auth.token) {
-    config.headers.Authorization = `Bearer ${auth.token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 },
